@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+model Log {
+  id      Int    @id @default(autoincrement())
+  level   Level
+  message String
+  meta    Json
+
+  @@map("logs")
+}
+
+enum Level {
+  Info
+  Warn
+  Error
+
+  @@map("level")
+}
+
+model UserTemp {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  code     String
+
+  @@map("users_temp")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password_hash String
+  password_salt String?
+  created_at    DateTime @default(now())
+
+  sessions          Session[]
+  password_recovery PasswordRecovery?
+  profile           Profile?
+
+  @@map("users")
+}
+
+model Session {
+  id         Int      @id @default(autoincrement())
+  token      String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int
+
+  @@map("sessions")
+}
+
+model PasswordRecovery {
+  id         Int      @id @default(autoincrement())
+  code       String
+  token      String?  @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int  @unique
+
+  @@map("password_recovery")
+}
+
+model Profile {
+  id               Int      @id @default(autoincrement())
+  name             String
+  avatar_image_url String
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now())
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int  @unique
+
+  @@map("profiles")
+}
