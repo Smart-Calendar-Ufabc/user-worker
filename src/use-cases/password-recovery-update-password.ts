@@ -16,7 +16,7 @@ export class PasswordRecoveryUpdatePasswordUseCase {
   ) {}
 
   async execute({token, confirmPassword, newPassword}: PasswordRecoveryUpdatePasswordRequest): Promise<void> {
-    const passwordRecovery = await this.passwordRecoveryRepository.findByToken(token);
+    const passwordRecovery = await this.passwordRecoveryRepository.findUniqueByToken(token);
 
     if (!passwordRecovery) {
       throw new ResourceNotFoundError();

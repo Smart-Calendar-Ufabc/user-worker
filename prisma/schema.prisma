@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Log {
-  id      Int    @id @default(autoincrement())
+  id      String @id @default(uuid())
   level   Level
   message String
   meta    Json
@@ -32,7 +32,7 @@ enum Level {
 }
 
 model UserTemp {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid())
   email    String @unique
   password String
   code     String
@@ -41,7 +41,7 @@ model UserTemp {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
+  id            String   @id @default(uuid())
   email         String   @unique
   password_hash String
   password_salt String?
@@ -55,39 +55,39 @@ model User {
 }
 
 model Session {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   token      String
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
-  user    User @relation(fields: [user_id], references: [id])
-  user_id Int
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
 
   @@map("sessions")
 }
 
 model PasswordRecovery {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   code       String
   token      String?  @unique
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
-  user    User @relation(fields: [user_id], references: [id])
-  user_id Int  @unique
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @unique
 
   @@map("password_recovery")
 }
 
 model Profile {
-  id               Int      @id @default(autoincrement())
+  id               String   @id @default(uuid())
   name             String
   avatar_image_url String
   created_at       DateTime @default(now())
   updated_at       DateTime @default(now())
 
-  user    User @relation(fields: [user_id], references: [id])
-  user_id Int  @unique
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @unique
 
   @@map("profiles")
 }

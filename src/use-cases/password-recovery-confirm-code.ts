@@ -20,13 +20,13 @@ export class PasswordRecoveryConfirmCodeUseCase {
   ) {}
 
   async execute({email, code}: PasswordRecoveryConfirmCodeRequest): Promise<PasswordRecoveryConfirmCodeResponse> {
-    const user = await this.usersRepository.findByEmail(email);
+    const user = await this.usersRepository.findUniqueByEmail(email);
 
     if (!user) {
       throw new ResourceNotFoundError();
     }
 
-    const passwordRecovery = await this.passwordRecoveryRepository.findByUserId(user.id);
+    const passwordRecovery = await this.passwordRecoveryRepository.findUniqueByUserId(user.id);
 
     if (!passwordRecovery) {
       throw new ResourceNotFoundError();

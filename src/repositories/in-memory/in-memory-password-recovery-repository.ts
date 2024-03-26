@@ -1,12 +1,12 @@
-import { PasswordRecovery, Prisma } from "@prisma/client";
+import { PasswordRecovery, Prisma } from "@prisma/client/edge";
 import { PasswordRecoveryRepository } from "../password-recovery-repository";
 import { ResourceNotFoundError } from "../../use-cases/errors/ResourceNotFoundError";
 
 export class InMemoryPasswordRecoveryRepository implements PasswordRecoveryRepository {
   public items: PasswordRecovery[] = [];
   
-  async findByUserId(userId: number) {
-    const passwordRecovery = this.items.find(item => item.user_id === userId);
+  async findUniqueByUserId(user_id: string) {
+    const passwordRecovery = this.items.find(item => item.user_id === user_id);
 
     if (!passwordRecovery) {
       return null;
@@ -15,7 +15,7 @@ export class InMemoryPasswordRecoveryRepository implements PasswordRecoveryRepos
     return passwordRecovery;
   }
 
-  async findByToken(token: string) {
+  async findUniqueByToken(token: string) {
     const passwordRecovery = this.items.find(item => item.token === token);
 
     if (!passwordRecovery) {
@@ -27,7 +27,7 @@ export class InMemoryPasswordRecoveryRepository implements PasswordRecoveryRepos
 
   async create({code, user_id, token = null}: Prisma.PasswordRecoveryUncheckedCreateInput) {
     const passwordRecovery: PasswordRecovery = {
-      id: this.items.length + 1,
+      id: crypto.randomUUID(),
       code,
       token,
       user_id,
@@ -40,7 +40,7 @@ export class InMemoryPasswordRecoveryRepository implements PasswordRecoveryRepos
     return passwordRecovery;
   }
 
-  async update(id: number, data: Prisma.PasswordRecoveryUpdateInput) {
+  async update(id: string, data: Prisma.PasswordRecoveryUpdateInput) {
     const passwordRecovery = this.items.find(item => item.id === id);
 
     if (!passwordRecovery) {
@@ -52,7 +52,7 @@ export class InMemoryPasswordRecoveryRepository implements PasswordRecoveryRepos
     return passwordRecovery;
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     this.items = this.items.filter(item => item.id !== id);
   }
 }

@@ -20,7 +20,7 @@ export class RegisterUseCase {
   async execute({email, password}: RegisterRequest): Promise<RegisterResponse> {
     const password_hash = await hash(password, 8);
 
-    const userWithSameEmail = await this.usersRepository.findByEmail(email);
+    const userWithSameEmail = await this.usersRepository.findUniqueByEmail(email);
 
     if (userWithSameEmail) {
       throw new UserAlreadyExistsError();

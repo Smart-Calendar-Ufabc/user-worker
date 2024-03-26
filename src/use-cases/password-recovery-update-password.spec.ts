@@ -40,7 +40,7 @@ describe('Password Recovery Update Password Use Case', () => {
       confirmPassword: 'newPassword'
     })
 
-    const updatedUser = await usersRepository.findByEmail(user.email);
+    const updatedUser = await usersRepository.findUniqueByEmail(user.email);
 
     expect(updatedUser?.password_hash).not.toBe(initialPasswordHash);
   });

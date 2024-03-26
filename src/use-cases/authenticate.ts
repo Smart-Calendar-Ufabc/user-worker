@@ -16,7 +16,7 @@ export class AuthenticateUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
   async execute({email, password}:AuthenticateRequest): Promise<AuthenticateResponse> {
-    const user = await this.usersRepository.findByEmail(email);
+    const user = await this.usersRepository.findUniqueByEmail(email);
 
     if (!user) {
       throw new InvalidCredentialsError();

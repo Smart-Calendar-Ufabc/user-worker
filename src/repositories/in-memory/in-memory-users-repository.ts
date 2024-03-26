@@ -1,11 +1,21 @@
-import { Prisma, User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client/edge";
 import { UsersRepository } from "../users-repository";
 import { ResourceNotFoundError } from "../../use-cases/errors/ResourceNotFoundError";
 
 export class InMemoryUsersRepository implements UsersRepository {
   public items: User[] = [];
 
-  async findByEmail(email: string) {
+  async findUniqueById(id: string) {
+    const user = this.items.find((user) => user.id === id);
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async findUniqueByEmail(email: string) {
     const user = this.items.find((user) => user.email === email);
 
     if (!user) {
@@ -17,7 +27,7 @@ export class InMemoryUsersRepository implements UsersRepository {
   
   async create({email, password_hash}: Prisma.UserCreateInput) {
     const user: User = {
-      id: this.items.length + 1,
+      id: crypto.randomUUID(),
       email,
       password_hash,
       password_salt: null,
@@ -29,7 +39,7 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user;
   }
 
-  async update(id: number, data: Prisma.UserUpdateInput) {
+  async update(id: string, data: Prisma.UserUpdateInput) {
     const user = this.items.find((user) => user.id === id);
 
     if (!user) {
