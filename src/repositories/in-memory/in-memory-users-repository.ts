@@ -30,7 +30,6 @@ export class InMemoryUsersRepository implements UsersRepository {
       id: crypto.randomUUID(),
       email,
       password_hash,
-      password_salt: null,
       created_at: new Date(),
     }
 
