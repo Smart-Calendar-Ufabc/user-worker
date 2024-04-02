@@ -11,7 +11,7 @@ let usersTempRepository: InMemoryUsersTempRepository;
 let usersRepository: UsersRepository;
 let sut: CreateUserTempUseCase;
 
-describe('Register User Case', () => {
+describe('Create User Temp Use Case', () => {
   beforeEach(() => {
     usersTempRepository = new InMemoryUsersTempRepository();
     usersRepository = new InMemoryUsersRepository();

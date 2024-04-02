@@ -34,7 +34,7 @@ describe('Create Profile Use Case', () => {
     expect(profile.id).toBeDefined();
   })
 
-  it('should not be able to create a new profile with inexistent profile', async() => {
+  it('should not be able to create a new profile with inexistent user', async() => {
     await expect(sut.execute({
       name: 'Jane Doe',
       avatar: 'http://avatar.com/avatar.jpg',
