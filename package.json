@@ -8,11 +8,13 @@
     "start": "wrangler dev",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240222.0",
     "@types/bcryptjs": "^2.4.6",
+    "@vitest/ui": "^1.4.0",
     "prisma": "^5.10.2",
     "typescript": "^5.0.4",
     "vite-tsconfig-paths": "^4.3.1",
