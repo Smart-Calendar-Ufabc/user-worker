@@ -1,35 +1,38 @@
-import { User } from "@prisma/client/edge";
-import { UsersRepository } from "../repositories/users-repository";
-import { InvalidCredentialsError } from "./errors/InvalidCredentialsError";
-import { compare } from "bcryptjs";
+import { User } from '@prisma/client/edge'
+import { UsersRepository } from '../repositories/users-repository'
+import { InvalidCredentialsError } from './errors/InvalidCredentialsError'
+import { compare } from 'bcryptjs'
 
 interface AuthenticateRequest {
-  email: string;
-  password: string;
+	email: string
+	password: string
 }
 
 interface AuthenticateResponse {
-  user: User
+	user: User
 }
 
 export class AuthenticateUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+	constructor(private usersRepository: UsersRepository) {}
 
-  async execute({email, password}:AuthenticateRequest): Promise<AuthenticateResponse> {
-    const user = await this.usersRepository.findUniqueByEmail(email);
+	async execute({
+		email,
+		password,
+	}: AuthenticateRequest): Promise<AuthenticateResponse> {
+		const user = await this.usersRepository.findUniqueByEmail(email)
 
-    if (!user) {
-      throw new InvalidCredentialsError();
-    }
-    
-    const doesMatchPassword = await compare(password, user.password_hash);
+		if (!user) {
+			throw new InvalidCredentialsError()
+		}
 
-    if (!doesMatchPassword) {
-      throw new InvalidCredentialsError();
-    }
+		const doesMatchPassword = await compare(password, user.password_hash)
 
-    return {
-      user
-    }
-  }
+		if (!doesMatchPassword) {
+			throw new InvalidCredentialsError()
+		}
+
+		return {
+			user,
+		}
+	}
 }

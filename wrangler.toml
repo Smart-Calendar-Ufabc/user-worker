@@ -1,10 +1,9 @@
 name = "user-worker"
 main = "src/index.ts"
 compatibility_date = "2024-03-04"
+node_compat = true
 
 [vars]
-DATABASE_URL = "prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiMDkwMDYxODQtYjg2My00NWUzLThlZTQtY2FjZmM5OTNjYWNiIiwidGVuYW50X2lkIjoiMTY0NDE1Yzc4ODNlOWFiODc2OWZhMzRmOWIwYjFjZDBiMjE3MDdiZGNhZTUyYjFlYjcyNDE0NWJhMzFkYzZmZCIsImludGVybmFsX3NlY3JldCI6IjI0ZTUyM2JlLTA3YjctNGFjNC05YmE4LWU0YTQ1Njk0ODY0MSJ9.IfEx9WRpM0ZyGT2BnqcAcz8cRFFnqeeB8iRazom9Zys"
-DIRECT_DATABASE_URL = "postgresql://docker:docker@localhost:5432/apieasecalendar?schema=public"
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
 # Note: Use secrets to store sensitive data.

@@ -5,6 +5,8 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
+    "env": "dotenv -e .dev.vars",
+    "migrate:dev": "dotenv -e .dev.vars -- npx prisma migrate dev",
     "start": "wrangler dev",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -14,6 +16,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240222.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/pg": "^8.11.4",
     "@vitest/ui": "^1.4.0",
     "prisma": "^5.10.2",
     "typescript": "^5.0.4",
@@ -22,8 +25,14 @@
     "wrangler": "^3.0.0"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^5.12.1",
     "@prisma/client": "^5.10.2",
     "@prisma/extension-accelerate": "^1.0.0",
-    "bcryptjs": "^2.4.3"
+    "@rocketseat/eslint-config": "^2.2.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv-cli": "^7.4.1",
+    "hono": "^4.2.1",
+    "pg": "^8.11.5",
+    "zod": "^3.22.4"
   }
 }
