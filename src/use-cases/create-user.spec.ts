@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from '@jest/globals'
 
 import { UsersRepository } from '../repositories/users-repository'
 import { CreateUserUseCase } from './create-user'

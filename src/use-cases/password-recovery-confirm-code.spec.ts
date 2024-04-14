@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from '@jest/globals'
 import { PasswordRecoveryRepository } from '../repositories/password-recovery-repository'
 import { UsersRepository } from '../repositories/users-repository'
 import { PasswordRecoveryConfirmCodeUseCase } from './password-recovery-confirm-code'

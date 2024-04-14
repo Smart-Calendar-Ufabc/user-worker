@@ -1,4 +1,4 @@
-name: Vitest Unit Testing
+name: Unit Testing
 on:
   workflow_dispatch:
 jobs:
@@ -7,14 +7,12 @@ jobs:
     permissions:
       contents: read
       deployments: write
-    name: Run Vitest Unit Tests
+    name: Run Jest Unit Tests
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
-        with:
-          node-version: "16"
       - name: Install Dependencies
         run: npm install
       - name: Running Tests
