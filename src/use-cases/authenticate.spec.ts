@@ -1,4 +1,11 @@
-import { beforeEach, describe, expect, it } from '@jest/globals'
+import {
+	beforeAll,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	jest,
+} from '@jest/globals'
 import { UsersRepository } from '../repositories/users-repository'
 import { AuthenticateUseCase } from './authenticate'
 import { InMemoryUsersRepository } from '../repositories/in-memory/in-memory-users-repository'
@@ -9,6 +16,12 @@ let usersRepository: UsersRepository
 let sut: AuthenticateUseCase
 
 describe('Authenticate Use Case', () => {
+	beforeAll(() => {
+		jest
+			.spyOn(crypto, 'randomUUID')
+			.mockImplementation(() => Math.random().toString())
+	})
+
 	beforeEach(() => {
 		usersRepository = new InMemoryUsersRepository()
 		sut = new AuthenticateUseCase(usersRepository)

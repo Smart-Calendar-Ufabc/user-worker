@@ -20,7 +20,10 @@
     ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
-    }
+    },
+    "setupFilesAfterEnv": [
+      "./jest.setup.ts"
+    ]
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240222.0",
