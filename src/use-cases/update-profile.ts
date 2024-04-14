@@ -1,39 +1,60 @@
-import { Profile } from "@prisma/client/edge";
-import { ProfilesRepository } from "../repositories/profiles-repository";
-import { ResourceNotFoundError } from "./errors/ResourceNotFoundError";
+import { Profile } from '@prisma/client/edge'
+import { ProfilesRepository } from '../repositories/profiles-repository'
+import { ResourceNotFoundError } from './errors/ResourceNotFoundError'
 
 interface UpdateProfileRequest {
-  id: string;
-  name: string;
-  avatar: string;
+	id: string
+	name: string
+	avatar?: string
+	blockedTimes?: {
+		dates: Date[]
+		weekDays: number[]
+		intervals: {
+			start: {
+				hour: number
+				minutes: number
+			}
+			end: {
+				hour: number
+				minutes: number
+			}
+		}[]
+	}[]
 }
 
 interface UpdateProfileResponse {
-  profile: Profile
+	profile: Profile
 }
 
 export class UpdateProfileUseCase {
-  constructor(private profilesRepository: ProfilesRepository) {
-    this.profilesRepository = profilesRepository;
-  }
+	constructor(private profilesRepository: ProfilesRepository) {
+		this.profilesRepository = profilesRepository
+	}
 
-  async execute({ id, name, avatar }: UpdateProfileRequest): Promise<UpdateProfileResponse> {
-    const profile = await this.profilesRepository.findUniqueById(id);
+	async execute({
+		id,
+		name,
+		avatar,
+		// blockedTimes,
+	}: UpdateProfileRequest): Promise<UpdateProfileResponse> {
+		const profile = await this.profilesRepository.findUniqueById(id)
 
-    if (!profile) {
-      throw new ResourceNotFoundError()
-    }
+		if (!profile) {
+			throw new ResourceNotFoundError()
+		}
 
-    // TODO: send image to cloudinary to get the image url
-    // TODO: delete old image from cloudinary
+		// TODO: send image to cloudinary to get the image url
+		// TODO: delete old image from cloudinary
 
-    profile.name = name;
-    profile.avatar_image_url = avatar;
+		profile.name = name
+		if (avatar) {
+			profile.avatar_image_url = avatar
+		}
 
-    await this.profilesRepository.save(profile)
+		const newProfile = await this.profilesRepository.save(profile.id, profile)
 
-    return {
-      profile
-    }
-  }
+		return {
+			profile: newProfile,
+		}
+	}
 }

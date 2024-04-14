@@ -1,4 +1,4 @@
-import { PasswordRecovery, Prisma } from '@prisma/client/edge'
+import { PasswordRecovery, Prisma } from '@prisma/client'
 import { PasswordRecoveryRepository } from '../password-recovery-repository'
 import { ResourceNotFoundError } from '../../use-cases/errors/ResourceNotFoundError'
 

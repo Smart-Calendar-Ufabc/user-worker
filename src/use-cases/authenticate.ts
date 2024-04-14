@@ -2,6 +2,7 @@ import { User } from '@prisma/client/edge'
 import { UsersRepository } from '../repositories/users-repository'
 import { InvalidCredentialsError } from './errors/InvalidCredentialsError'
 import { compare } from 'bcryptjs'
+import { SessionsRepository } from '../repositories/sessions-repository'
 
 interface AuthenticateRequest {
 	email: string
@@ -10,10 +11,14 @@ interface AuthenticateRequest {
 
 interface AuthenticateResponse {
 	user: User
+	token: string
 }
 
 export class AuthenticateUseCase {
-	constructor(private usersRepository: UsersRepository) {}
+	constructor(
+		private usersRepository: UsersRepository,
+		private sessionsRepository: SessionsRepository,
+	) {}
 
 	async execute({
 		email,
@@ -31,8 +36,16 @@ export class AuthenticateUseCase {
 			throw new InvalidCredentialsError()
 		}
 
+		const token = crypto.randomUUID()
+
+		await this.sessionsRepository.create({
+			token,
+			user_id: user.id,
+		})
+
 		return {
 			user,
+			token,
 		}
 	}
 }

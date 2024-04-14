@@ -1,38 +1,40 @@
-import {PasswordRecoveryRepository} from '../repositories/password-recovery-repository';
-import { UsersRepository } from '../repositories/users-repository';
-import { ResourceNotFoundError } from './errors/ResourceNotFoundError';
+import { PasswordRecoveryRepository } from '../repositories/password-recovery-repository'
+import { UsersRepository } from '../repositories/users-repository'
+import { ResourceNotFoundError } from './errors/ResourceNotFoundError'
 
 interface PasswordRecoverySendCodeRequest {
-  email: string;
+	email: string
 }
 
 interface PasswordRecoverySendCodeResponse {
-  code: string;
+	code: string
 }
 
 export class PasswordRecoverySendCodeUseCase {
-  constructor(
-    private passwordRecoveryRepository: PasswordRecoveryRepository, 
-    private usersRepository: UsersRepository
-  ) {}
+	constructor(
+		private passwordRecoveryRepository: PasswordRecoveryRepository,
+		private usersRepository: UsersRepository,
+	) {}
 
-  async execute({email}: PasswordRecoverySendCodeRequest): Promise<PasswordRecoverySendCodeResponse> {
-    const user = await this.usersRepository.findUniqueByEmail(email);
+	async execute({
+		email,
+	}: PasswordRecoverySendCodeRequest): Promise<PasswordRecoverySendCodeResponse> {
+		const user = await this.usersRepository.findUniqueByEmail(email)
 
-    if (!user) {
-      throw new ResourceNotFoundError();
-    }
+		if (!user) {
+			throw new ResourceNotFoundError()
+		}
 
-    // Generate a random 5 characters string
-    const code = Math.random().toString(36).substring(2, 7); 
+		// Generate a random 5 characters string
+		const code = Math.random().toString(36).substring(2, 7)
 
-    // TODO: Refactor, send the code to the user's email
+		// TODO: Refactor, send the code to the user's email
 
-    await this.passwordRecoveryRepository.create({
-      code,
-      user_id: user.id
-    })
+		await this.passwordRecoveryRepository.create({
+			code,
+			user_id: user.id,
+		})
 
-    return { code };
-  }
+		return { code }
+	}
 }

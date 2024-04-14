@@ -31,4 +31,12 @@ export class PrismaUsersTempRepository implements UsersTempRepository {
 
 		return userTemp
 	}
+
+	async delete(id: string) {
+		await this.prisma.userTemp.delete({
+			where: {
+				id,
+			},
+		})
+	}
 }

@@ -11,8 +11,11 @@ import { AuthenticateUseCase } from './authenticate'
 import { InMemoryUsersRepository } from '../repositories/in-memory/in-memory-users-repository'
 import { hash } from 'bcryptjs'
 import { InvalidCredentialsError } from './errors/InvalidCredentialsError'
+import { SessionsRepository } from '../repositories/sessions-repository'
+import { InMemorySessionsRepository } from '../repositories/in-memory/in-memory-session-repository'
 
 let usersRepository: UsersRepository
+let sessionsRepository: SessionsRepository
 let sut: AuthenticateUseCase
 
 describe('Authenticate Use Case', () => {
@@ -24,7 +27,8 @@ describe('Authenticate Use Case', () => {
 
 	beforeEach(() => {
 		usersRepository = new InMemoryUsersRepository()
-		sut = new AuthenticateUseCase(usersRepository)
+		sessionsRepository = new InMemorySessionsRepository()
+		sut = new AuthenticateUseCase(usersRepository, sessionsRepository)
 	})
 
 	it('should be able to authenticate', async () => {

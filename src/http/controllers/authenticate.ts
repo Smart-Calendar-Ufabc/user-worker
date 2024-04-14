@@ -2,6 +2,7 @@ import { Context } from 'hono'
 import { z } from 'zod'
 import { makeAuthenticateUseCase } from '../../use-cases/factories/make-authenticate'
 import { InvalidCredentialsError } from '../../use-cases/errors/InvalidCredentialsError'
+import { parseZodErrors } from '../../factories/parseZodErrors'
 
 export async function authenticate(c: Context) {
 	const authenticateBodySchema = z.object({
@@ -16,13 +17,27 @@ export async function authenticate(c: Context) {
 			databaseConnectionString: c.env.DATABASE_URL,
 		})
 
-		const { user } = await authenticateUseCase.execute({ email, password })
-
-		return c.json({
-			user,
+		const { token } = await authenticateUseCase.execute({
+			email,
+			password,
 		})
+
+		return c.json(
+			{
+				token,
+			},
+			200,
+		)
 	} catch (error) {
-		if (error instanceof InvalidCredentialsError) {
+		if (error instanceof z.ZodError) {
+			return c.json(
+				{
+					message: 'Invalid request body',
+					errors: parseZodErrors(error),
+				},
+				400,
+			)
+		} else if (error instanceof InvalidCredentialsError) {
 			return c.json(
 				{
 					message: 'Invalid credentials',

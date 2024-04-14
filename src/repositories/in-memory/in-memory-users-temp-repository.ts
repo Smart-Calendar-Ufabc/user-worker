@@ -1,4 +1,4 @@
-import { Prisma, UserTemp } from '@prisma/client/edge'
+import { Prisma, UserTemp } from '@prisma/client'
 import { UsersTempRepository } from '../users-temp-repository'
 
 export class InMemoryUsersTempRepository implements UsersTempRepository {
@@ -14,11 +14,7 @@ export class InMemoryUsersTempRepository implements UsersTempRepository {
 		return userTemp
 	}
 
-	async create({
-		email,
-		password_hash,
-		code,
-	}: Prisma.UserTempCreateInput): Promise<UserTemp> {
+	async create({ email, password_hash, code }: Prisma.UserTempCreateInput) {
 		const userTemp: UserTemp = {
 			id: crypto.randomUUID(),
 			email,
@@ -29,5 +25,9 @@ export class InMemoryUsersTempRepository implements UsersTempRepository {
 		this.items.push(userTemp)
 
 		return userTemp
+	}
+
+	async delete(id: string) {
+		this.items = this.items.filter((userTemp) => userTemp.id !== id)
 	}
 }

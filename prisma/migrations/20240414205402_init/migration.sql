@@ -1,16 +1,10 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Log` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "Log";
+-- CreateEnum
+CREATE TYPE "level" AS ENUM ('Info', 'Warn', 'Error');
 
 -- CreateTable
 CREATE TABLE "logs" (
-    "id" SERIAL NOT NULL,
-    "level" "Level" NOT NULL,
+    "id" TEXT NOT NULL,
+    "level" "level" NOT NULL,
     "message" TEXT NOT NULL,
     "meta" JSONB NOT NULL,
 
@@ -19,9 +13,9 @@ CREATE TABLE "logs" (
 
 -- CreateTable
 CREATE TABLE "users_temp" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "password_hash" TEXT NOT NULL,
     "code" TEXT NOT NULL,
 
     CONSTRAINT "users_temp_pkey" PRIMARY KEY ("id")
@@ -29,43 +23,45 @@ CREATE TABLE "users_temp" (
 
 -- CreateTable
 CREATE TABLE "users" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password_hash" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "sessions" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "token" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" TEXT NOT NULL,
 
     CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "password_recovery" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "code" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" INTEGER NOT NULL,
+    "token" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" TEXT NOT NULL,
 
     CONSTRAINT "password_recovery_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "profiles" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "avatarImageUrl" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" INTEGER NOT NULL,
+    "avatar_image_url" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" TEXT NOT NULL,
 
     CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
 );
@@ -75,6 +71,9 @@ CREATE UNIQUE INDEX "users_temp_email_key" ON "users_temp"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "password_recovery_token_key" ON "password_recovery"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "password_recovery_user_id_key" ON "password_recovery"("user_id");

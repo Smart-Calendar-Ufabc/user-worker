@@ -12,6 +12,7 @@ interface CreateUserTempRequest {
 
 interface CreateUserTempResponse {
 	userTemp: UserTemp
+	code: string
 }
 
 export class CreateUserTempUseCase {
@@ -43,6 +44,7 @@ export class CreateUserTempUseCase {
 
 		return {
 			userTemp,
+			code,
 		}
 	}
 }

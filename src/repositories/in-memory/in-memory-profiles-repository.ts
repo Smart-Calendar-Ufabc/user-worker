@@ -1,5 +1,6 @@
-import { Prisma, Profile } from '@prisma/client/edge'
+import { Prisma, Profile } from '@prisma/client'
 import { ProfilesRepository } from '../profiles-repository'
+import { ResourceNotFoundError } from '../../use-cases/errors/ResourceNotFoundError'
 
 export class InMemoryProfilesRepository implements ProfilesRepository {
 	public items: Profile[] = []
@@ -25,17 +26,19 @@ export class InMemoryProfilesRepository implements ProfilesRepository {
 	}
 
 	async create({
-		avatar_image_url,
 		name,
 		user_id,
+		avatar_image_url,
+		blockedTime_id,
 	}: Prisma.ProfileUncheckedCreateInput) {
 		const profile: Profile = {
 			id: crypto.randomUUID(),
-			avatar_image_url,
-			name,
-			user_id,
 			created_at: new Date(),
 			updated_at: new Date(),
+			name,
+			user_id,
+			avatar_image_url: avatar_image_url || null,
+			blockedTime_id: blockedTime_id || null,
 		}
 
 		this.items.push(profile)
@@ -43,12 +46,14 @@ export class InMemoryProfilesRepository implements ProfilesRepository {
 		return profile
 	}
 
-	async save(profile: Profile) {
-		const profileIndex = this.items.findIndex((item) => item.id === profile.id)
+	async save(id: string, data: Prisma.ProfileUncheckedUpdateInput) {
+		const profile = this.items.find((item) => item.id === id)
 
-		if (profileIndex >= 0) {
-			this.items[profileIndex] = profile
+		if (!profile) {
+			throw new ResourceNotFoundError()
 		}
+
+		Object.assign(profile, data)
 
 		return profile
 	}

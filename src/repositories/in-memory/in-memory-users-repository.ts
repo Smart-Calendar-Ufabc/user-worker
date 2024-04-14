@@ -1,4 +1,4 @@
-import { Prisma, User } from '@prisma/client/edge'
+import { Prisma, User } from '@prisma/client'
 import { UsersRepository } from '../users-repository'
 import { ResourceNotFoundError } from '../../use-cases/errors/ResourceNotFoundError'
 
