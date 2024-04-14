@@ -49,6 +49,9 @@ export async function singUpCodeValidate(c: Context) {
 			return c.json(
 				{
 					message: 'Invalid code',
+					errors: {
+						code: ['Invalid code'],
+					},
 				},
 				400,
 			)

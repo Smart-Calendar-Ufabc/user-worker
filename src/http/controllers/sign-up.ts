@@ -24,7 +24,6 @@ export async function singUp(c: Context) {
 
 		return c.json(
 			{
-				message: 'Code sent to email',
 				code,
 			},
 			200,

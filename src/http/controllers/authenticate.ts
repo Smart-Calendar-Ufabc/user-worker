@@ -42,7 +42,7 @@ export async function authenticate(c: Context) {
 				{
 					message: 'Invalid credentials',
 				},
-				400,
+				401,
 			)
 		}
 

@@ -1,7 +1,6 @@
 import { Context } from 'hono'
 import { z } from 'zod'
 import { ResourceNotFoundError } from '../../use-cases/errors/ResourceNotFoundError'
-import { InvalidCodeError } from '../../use-cases/errors/InvalidCodeError'
 import { parseZodErrors } from '../../factories/parseZodErrors'
 import { makeCreateProfileUseCase } from '../../use-cases/factories/make-create-profile'
 import { UserAlreadyExistsError } from '../../use-cases/errors/UserAlreadyExistsError'
@@ -74,13 +73,6 @@ export async function createProfile(c: Context) {
 					message: 'Profile already exists',
 				},
 				403,
-			)
-		} else if (error instanceof InvalidCodeError) {
-			return c.json(
-				{
-					message: 'Invalid code',
-				},
-				400,
 			)
 		}
 
