@@ -1,58 +1,64 @@
-import { PasswordRecovery, Prisma } from "@prisma/client/edge";
-import { PasswordRecoveryRepository } from "../password-recovery-repository";
-import { ResourceNotFoundError } from "../../use-cases/errors/ResourceNotFoundError";
+import { PasswordRecovery, Prisma } from '@prisma/client/edge'
+import { PasswordRecoveryRepository } from '../password-recovery-repository'
+import { ResourceNotFoundError } from '../../use-cases/errors/ResourceNotFoundError'
 
-export class InMemoryPasswordRecoveryRepository implements PasswordRecoveryRepository {
-  public items: PasswordRecovery[] = [];
-  
-  async findUniqueByUserId(user_id: string) {
-    const passwordRecovery = this.items.find(item => item.user_id === user_id);
+export class InMemoryPasswordRecoveryRepository
+	implements PasswordRecoveryRepository
+{
+	public items: PasswordRecovery[] = []
 
-    if (!passwordRecovery) {
-      return null;
-    }
+	async findUniqueByUserId(user_id: string) {
+		const passwordRecovery = this.items.find((item) => item.user_id === user_id)
 
-    return passwordRecovery;
-  }
+		if (!passwordRecovery) {
+			return null
+		}
 
-  async findUniqueByToken(token: string) {
-    const passwordRecovery = this.items.find(item => item.token === token);
+		return passwordRecovery
+	}
 
-    if (!passwordRecovery) {
-      return null;
-    }
+	async findUniqueByToken(token: string) {
+		const passwordRecovery = this.items.find((item) => item.token === token)
 
-    return passwordRecovery;
-  }
+		if (!passwordRecovery) {
+			return null
+		}
 
-  async create({code, user_id, token = null}: Prisma.PasswordRecoveryUncheckedCreateInput) {
-    const passwordRecovery: PasswordRecovery = {
-      id: crypto.randomUUID(),
-      code,
-      token,
-      user_id,
-      created_at: new Date(),
-      updated_at: new Date(),
-    }
+		return passwordRecovery
+	}
 
-    this.items.push(passwordRecovery);
+	async create({
+		code,
+		user_id,
+		token = null,
+	}: Prisma.PasswordRecoveryUncheckedCreateInput) {
+		const passwordRecovery: PasswordRecovery = {
+			id: crypto.randomUUID(),
+			code,
+			token,
+			user_id,
+			created_at: new Date(),
+			updated_at: new Date(),
+		}
 
-    return passwordRecovery;
-  }
+		this.items.push(passwordRecovery)
 
-  async update(id: string, data: Prisma.PasswordRecoveryUpdateInput) {
-    const passwordRecovery = this.items.find(item => item.id === id);
+		return passwordRecovery
+	}
 
-    if (!passwordRecovery) {
-      throw new ResourceNotFoundError();
-    }
+	async update(id: string, data: Prisma.PasswordRecoveryUpdateInput) {
+		const passwordRecovery = this.items.find((item) => item.id === id)
 
-    Object.assign(passwordRecovery, data);
+		if (!passwordRecovery) {
+			throw new ResourceNotFoundError()
+		}
 
-    return passwordRecovery;
-  }
+		Object.assign(passwordRecovery, data)
 
-  async delete(id: string) {
-    this.items = this.items.filter(item => item.id !== id);
-  }
+		return passwordRecovery
+	}
+
+	async delete(id: string) {
+		this.items = this.items.filter((item) => item.id !== id)
+	}
 }

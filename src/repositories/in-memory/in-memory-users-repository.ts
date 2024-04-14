@@ -1,52 +1,52 @@
-import { Prisma, User } from "@prisma/client/edge";
-import { UsersRepository } from "../users-repository";
-import { ResourceNotFoundError } from "../../use-cases/errors/ResourceNotFoundError";
+import { Prisma, User } from '@prisma/client/edge'
+import { UsersRepository } from '../users-repository'
+import { ResourceNotFoundError } from '../../use-cases/errors/ResourceNotFoundError'
 
 export class InMemoryUsersRepository implements UsersRepository {
-  public items: User[] = [];
+	public items: User[] = []
 
-  async findUniqueById(id: string) {
-    const user = this.items.find((user) => user.id === id);
+	async findUniqueById(id: string) {
+		const user = this.items.find((user) => user.id === id)
 
-    if (!user) {
-      return null;
-    }
+		if (!user) {
+			return null
+		}
 
-    return user;
-  }
+		return user
+	}
 
-  async findUniqueByEmail(email: string) {
-    const user = this.items.find((user) => user.email === email);
+	async findUniqueByEmail(email: string) {
+		const user = this.items.find((user) => user.email === email)
 
-    if (!user) {
-      return null;
-    }
+		if (!user) {
+			return null
+		}
 
-    return user;
-  }
-  
-  async create({email, password_hash}: Prisma.UserCreateInput) {
-    const user: User = {
-      id: crypto.randomUUID(),
-      email,
-      password_hash,
-      created_at: new Date(),
-    }
+		return user
+	}
 
-    this.items.push(user);
+	async create({ email, password_hash }: Prisma.UserCreateInput) {
+		const user: User = {
+			id: crypto.randomUUID(),
+			email,
+			password_hash,
+			created_at: new Date(),
+		}
 
-    return user;
-  }
+		this.items.push(user)
 
-  async update(id: string, data: Prisma.UserUpdateInput) {
-    const user = this.items.find((user) => user.id === id);
+		return user
+	}
 
-    if (!user) {
-      throw new ResourceNotFoundError();
-    }
+	async update(id: string, data: Prisma.UserUpdateInput) {
+		const user = this.items.find((user) => user.id === id)
 
-    Object.assign(user, data);
+		if (!user) {
+			throw new ResourceNotFoundError()
+		}
 
-    return user;
-  }
+		Object.assign(user, data)
+
+		return user
+	}
 }
