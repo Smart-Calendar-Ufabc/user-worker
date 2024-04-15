@@ -15,7 +15,10 @@ app.get('/', (c: Context) => c.json({ message: 'Hello, world!' }))
 app.use(
 	'/*',
 	cors({
-		origin: 'https://ease-calendar-front-end.pages.dev/',
+		origin: [
+			'https://ease-calendar-front-end.pages.dev',
+			'http://localhost:3000',
+		],
 		allowMethods: ['POST', 'PUT'],
 		allowHeaders: ['Content-Type', 'Authorization'],
 	}),
