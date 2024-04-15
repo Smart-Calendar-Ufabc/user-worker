@@ -1,3 +1,5 @@
-NODE_ENV=dev
-DATABASE_URL=prisma://accelerate.prisma-data.net/?api_key=__API_KEY__
-DIRECT_DATABASE_URL=postgresql://user:password@host:port/db_name?schema=public
+CLOUDINARY_API_KEY = 
+CLOUDINARY_API_SECRET = 
+CLOUDINARY_CLOUD_NAME = 
+
+DATABASE_URL=postgresql://docker:docker@localhost:5432/apieasecalendar?schema=public

@@ -6,48 +6,43 @@ import { makeCreateProfileUseCase } from '../../use-cases/factories/make-create-
 import { UserAlreadyExistsError } from '../../use-cases/errors/UserAlreadyExistsError'
 
 export async function createProfile(c: Context) {
-	const intervalSchema = z.object({
-		start: z.object({
-			hour: z.number().int().min(0).max(23),
-			minutes: z.number().int().min(0).max(59),
-		}),
-		end: z.object({
-			hour: z.number().int().min(0).max(23),
-			minutes: z.number().int().min(0).max(59),
-		}),
-	})
-
-	const blockedTimeTypeSchema = z.object({
-		dates: z.array(z.date()),
-		weekDays: z.array(z.number().int().min(0).max(6)),
-		intervals: z.array(intervalSchema),
-	})
-
 	const signUpBodySchema = z.object({
 		name: z.string(),
 		avatar: z.string().optional(),
-		blockedTimes: z.array(blockedTimeTypeSchema).optional(),
+		sleepHours: z.object({
+			start: z.object({
+				hour: z.number().int().min(0).max(23),
+				minutes: z.number().int().min(0).max(59),
+			}),
+			end: z.object({
+				hour: z.number().int().min(0).max(23),
+				minutes: z.number().int().min(0).max(59),
+			}),
+		}),
 	})
 
 	try {
-		const { name, avatar, blockedTimes } = signUpBodySchema.parse(
+		const { name, avatar, sleepHours } = signUpBodySchema.parse(
 			await c.req.json(),
 		)
 
 		const createProfileUseCase = makeCreateProfileUseCase({
 			databaseConnectionString: c.env.DATABASE_URL,
+			cloudinaryApiKey: c.env.CLOUDINARY_API_KEY,
+			cloudinaryCloudName: c.env.CLOUDINARY_CLOUD_NAME,
+			cloundinaryApiSecret: c.env.CLOUDINARY_API_SECRET,
 		})
 
 		const { profile } = await createProfileUseCase.execute({
 			user_id: c.env.user.id,
 			name,
 			avatar,
-			blockedTimes,
+			sleepHours,
 		})
 
 		return c.json(
 			{
-				data: { profile },
+				profile,
 			},
 			201,
 		)

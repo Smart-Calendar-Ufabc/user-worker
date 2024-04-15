@@ -6,20 +6,16 @@ interface UpdateProfileRequest {
 	id: string
 	name: string
 	avatar?: string
-	blockedTimes?: {
-		dates: Date[]
-		weekDays: number[]
-		intervals: {
-			start: {
-				hour: number
-				minutes: number
-			}
-			end: {
-				hour: number
-				minutes: number
-			}
-		}[]
-	}[]
+	sleepHours?: {
+		start: {
+			hour: number
+			minutes: number
+		}
+		end: {
+			hour: number
+			minutes: number
+		}
+	}
 }
 
 interface UpdateProfileResponse {
@@ -35,7 +31,7 @@ export class UpdateProfileUseCase {
 		id,
 		name,
 		avatar,
-		// blockedTimes,
+		sleepHours,
 	}: UpdateProfileRequest): Promise<UpdateProfileResponse> {
 		const profile = await this.profilesRepository.findUniqueById(id)
 
@@ -51,7 +47,11 @@ export class UpdateProfileUseCase {
 			profile.avatar_image_url = avatar
 		}
 
-		const newProfile = await this.profilesRepository.save(profile.id, profile)
+		const newProfile = await this.profilesRepository.save(profile.id, {
+			name: profile.name,
+			avatar_image_url: profile.avatar_image_url,
+			sleepHours,
+		})
 
 		return {
 			profile: newProfile,

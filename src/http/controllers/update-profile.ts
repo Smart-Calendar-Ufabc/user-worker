@@ -7,31 +7,23 @@ import { UserAlreadyExistsError } from '../../use-cases/errors/UserAlreadyExists
 import { makeUpdateProfileUseCase } from '../../use-cases/factories/make-update-profile'
 
 export async function updateProfile(c: Context) {
-	const intervalSchema = z.object({
-		start: z.object({
-			hour: z.number().int().min(0).max(23),
-			minutes: z.number().int().min(0).max(59),
-		}),
-		end: z.object({
-			hour: z.number().int().min(0).max(23),
-			minutes: z.number().int().min(0).max(59),
-		}),
-	})
-
-	const blockedTimeTypeSchema = z.object({
-		dates: z.array(z.date()),
-		weekDays: z.array(z.number().int().min(0).max(6)),
-		intervals: z.array(intervalSchema),
-	})
-
 	const signUpBodySchema = z.object({
 		name: z.string(),
 		avatar: z.string().optional(),
-		blockedTimes: z.array(blockedTimeTypeSchema).optional(),
+		sleepHours: z.object({
+			start: z.object({
+				hour: z.number().int().min(0).max(23),
+				minutes: z.number().int().min(0).max(59),
+			}),
+			end: z.object({
+				hour: z.number().int().min(0).max(23),
+				minutes: z.number().int().min(0).max(59),
+			}),
+		}),
 	})
 
 	try {
-		const { name, avatar, blockedTimes } = signUpBodySchema.parse(
+		const { name, avatar, sleepHours } = signUpBodySchema.parse(
 			await c.req.json(),
 		)
 
@@ -43,7 +35,7 @@ export async function updateProfile(c: Context) {
 			id: c.env.profile.id,
 			name,
 			avatar,
-			blockedTimes,
+			sleepHours,
 		})
 
 		return c.json({ profile }, 200)

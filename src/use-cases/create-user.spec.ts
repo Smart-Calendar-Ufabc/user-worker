@@ -7,16 +7,25 @@ import { hash } from 'bcryptjs'
 import { InMemoryUsersTempRepository } from '../repositories/in-memory/in-memory-users-temp-repository'
 import { ResourceNotFoundError } from './errors/ResourceNotFoundError'
 import { InvalidCodeError } from './errors/InvalidCodeError'
+import { UsersTempRepository } from '../repositories/users-temp-repository'
+import { SessionsRepository } from '../repositories/sessions-repository'
+import { InMemorySessionsRepository } from '../repositories/in-memory/in-memory-session-repository'
 
 let usersRepository: UsersRepository
-let usersTempRepository: InMemoryUsersTempRepository
+let usersTempRepository: UsersTempRepository
+let usersSessionsRepository: SessionsRepository
 let sut: CreateUserUseCase
 
 describe('Create User Use Case', () => {
 	beforeEach(() => {
 		usersRepository = new InMemoryUsersRepository()
 		usersTempRepository = new InMemoryUsersTempRepository()
-		sut = new CreateUserUseCase(usersRepository, usersTempRepository)
+		usersSessionsRepository = new InMemorySessionsRepository()
+		sut = new CreateUserUseCase(
+			usersRepository,
+			usersTempRepository,
+			usersSessionsRepository,
+		)
 	})
 
 	it('should be able to register a new user', async () => {

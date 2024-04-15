@@ -24,9 +24,9 @@ export async function ensureAuthenticate(c: Context, next: Next) {
 	if (!session) {
 		return c.json(
 			{
-				message: 'Session not found',
+				message: 'Not authenticated',
 			},
-			404,
+			401,
 		)
 	}
 
@@ -39,9 +39,9 @@ export async function ensureAuthenticate(c: Context, next: Next) {
 	if (!user) {
 		return c.json(
 			{
-				message: 'User not found',
+				message: 'Not authenticated',
 			},
-			404,
+			401,
 		)
 	}
 

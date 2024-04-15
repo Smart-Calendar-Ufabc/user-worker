@@ -40,7 +40,10 @@ export async function singUp(c: Context) {
 		} else if (error instanceof UserAlreadyExistsError) {
 			return c.json(
 				{
-					message: 'User already exists with this email',
+					message: 'Invalid request body',
+					errors: {
+						email: ['User already exists with this email'],
+					},
 				},
 				409, // Conflict
 			)

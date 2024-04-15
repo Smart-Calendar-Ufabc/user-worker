@@ -7,16 +7,24 @@ import { InMemoryProfilesRepository } from '../repositories/in-memory/in-memory-
 import { UsersRepository } from '../repositories/users-repository'
 import { InMemoryUsersRepository } from '../repositories/in-memory/in-memory-users-repository'
 import { ResourceNotFoundError } from './errors/ResourceNotFoundError'
+import { InMemoryFileStorage } from '../services/file-storage/in-memory/in-memory-file-storage'
+import { FileStorage } from '../services/file-storage/file-storage'
 
 let profilesRepository: ProfilesRepository
 let usersRepository: UsersRepository
+let fileStorage: FileStorage
 let sut: CreateProfileUseCase
 
 describe('Create Profile Use Case', () => {
 	beforeEach(() => {
 		profilesRepository = new InMemoryProfilesRepository()
 		usersRepository = new InMemoryUsersRepository()
-		sut = new CreateProfileUseCase(profilesRepository, usersRepository)
+		fileStorage = new InMemoryFileStorage()
+		sut = new CreateProfileUseCase(
+			profilesRepository,
+			usersRepository,
+			fileStorage,
+		)
 	})
 
 	it('should be able to create a new profile', async () => {

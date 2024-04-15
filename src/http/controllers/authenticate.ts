@@ -27,6 +27,9 @@ export async function authenticate(c: Context) {
 				token,
 			},
 			200,
+			{
+				'Set-Cookie': `authToken=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=3600; Secure`,
+			},
 		)
 	} catch (error) {
 		if (error instanceof z.ZodError) {
@@ -38,6 +41,7 @@ export async function authenticate(c: Context) {
 				400,
 			)
 		} else if (error instanceof InvalidCredentialsError) {
+			console.error(error)
 			return c.json(
 				{
 					message: 'Invalid credentials',

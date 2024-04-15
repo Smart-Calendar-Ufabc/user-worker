@@ -18,14 +18,14 @@ export async function singUpCodeValidate(c: Context) {
 			databaseConnectionString: c.env.DATABASE_URL,
 		})
 
-		await createUserUseCase.execute({
+		const { token } = await createUserUseCase.execute({
 			email,
 			code,
 		})
 
 		return c.json(
 			{
-				message: 'Code validated successfully',
+				token,
 			},
 			200,
 		)

@@ -34,7 +34,14 @@ export class CreateUserTempUseCase {
 
 		const salt = await genSalt(10)
 		const code = generateSixDigitCode()
-		const userTemp = await this.usersTempRepository.create({
+
+		const userTemp = await this.usersTempRepository.findUniqueByEmail(email)
+
+		if (userTemp) {
+			await this.usersTempRepository.delete(userTemp.id)
+		}
+
+		const userTempCreated = await this.usersTempRepository.create({
 			email,
 			password_hash: await hash(password, salt),
 			code,
@@ -43,7 +50,7 @@ export class CreateUserTempUseCase {
 		// send email with code
 
 		return {
-			userTemp,
+			userTemp: userTempCreated,
 			code,
 		}
 	}

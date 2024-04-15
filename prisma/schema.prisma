@@ -12,24 +12,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // directUrl = env("DIRECT_DATABASE_URL")
-}
-
-model Log {
-  id      String @id @default(uuid())
-  level   Level
-  message String
-  meta    Json
-
-  @@map("logs")
-}
-
-enum Level {
-  Info
-  Warn
-  Error
-
-  @@map("level")
 }
 
 model UserTemp {
@@ -81,38 +63,15 @@ model PasswordRecovery {
 
 model Profile {
   id               String   @id @default(uuid())
+  publicId         String?  @unique @default(uuid())
   name             String
   avatar_image_url String?
   created_at       DateTime @default(now())
   updated_at       DateTime @default(now())
 
-  user           User          @relation(fields: [user_id], references: [id])
-  user_id        String        @unique
-  blockedTimes   BlockedTime[]
-  blockedTime_id String?
+  user       User   @relation(fields: [user_id], references: [id])
+  user_id    String @unique
+  sleepHours Json?
 
   @@map("profiles")
-}
-
-model BlockedTime {
-  id         String     @id @default(uuid())
-  dates      DateTime[]
-  weekDays   Int[]
-  intervals  Interval[]
-  profile    Profile    @relation(fields: [profile_id], references: [id])
-  profile_id String
-
-  @@map("blocked_times")
-}
-
-model Interval {
-  id             String      @id @default(uuid())
-  startHour      Int
-  startMinutes   Int
-  endHour        Int
-  endMinutes     Int
-  blockedTime    BlockedTime @relation(fields: [blockedTime_id], references: [id])
-  blockedTime_id String
-
-  @@map("intervals")
 }

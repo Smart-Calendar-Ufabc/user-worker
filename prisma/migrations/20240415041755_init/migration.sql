@@ -1,16 +1,3 @@
--- CreateEnum
-CREATE TYPE "level" AS ENUM ('Info', 'Warn', 'Error');
-
--- CreateTable
-CREATE TABLE "logs" (
-    "id" TEXT NOT NULL,
-    "level" "level" NOT NULL,
-    "message" TEXT NOT NULL,
-    "meta" JSONB NOT NULL,
-
-    CONSTRAINT "logs_pkey" PRIMARY KEY ("id")
-);
-
 -- CreateTable
 CREATE TABLE "users_temp" (
     "id" TEXT NOT NULL,
@@ -57,11 +44,13 @@ CREATE TABLE "password_recovery" (
 -- CreateTable
 CREATE TABLE "profiles" (
     "id" TEXT NOT NULL,
+    "publicId" TEXT,
     "name" TEXT NOT NULL,
-    "avatar_image_url" TEXT NOT NULL,
+    "avatar_image_url" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" TEXT NOT NULL,
+    "sleepHours" JSONB,
 
     CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
 );
@@ -73,10 +62,16 @@ CREATE UNIQUE INDEX "users_temp_email_key" ON "users_temp"("email");
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "sessions_token_key" ON "sessions"("token");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "password_recovery_token_key" ON "password_recovery"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "password_recovery_user_id_key" ON "password_recovery"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "profiles_publicId_key" ON "profiles"("publicId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "profiles_user_id_key" ON "profiles"("user_id");

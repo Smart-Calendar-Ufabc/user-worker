@@ -3,25 +3,23 @@ import { ProfilesRepository } from '../repositories/profiles-repository'
 import { UsersRepository } from '../repositories/users-repository'
 import { ResourceNotFoundError } from './errors/ResourceNotFoundError'
 import { UserAlreadyExistsError } from './errors/UserAlreadyExistsError'
+import { FileStorage } from '../services/file-storage/file-storage'
+import { FILE_STORAGE } from '../config'
 
 interface CreateProfileRequest {
 	user_id: string
 	name: string
 	avatar?: string
-	blockedTimes?: {
-		dates: Date[]
-		weekDays: number[]
-		intervals: {
-			start: {
-				hour: number
-				minutes: number
-			}
-			end: {
-				hour: number
-				minutes: number
-			}
-		}[]
-	}[]
+	sleepHours?: {
+		start: {
+			hour: number
+			minutes: number
+		}
+		end: {
+			hour: number
+			minutes: number
+		}
+	}
 }
 
 interface CreateProfileResponse {
@@ -32,6 +30,7 @@ export class CreateProfileUseCase {
 	constructor(
 		private profilesRepository: ProfilesRepository,
 		private usersRepository: UsersRepository,
+		private fileStorageService: FileStorage,
 	) {
 		this.profilesRepository = profilesRepository
 	}
@@ -40,7 +39,7 @@ export class CreateProfileUseCase {
 		user_id,
 		name,
 		avatar,
-		// blockedTimes,
+		sleepHours,
 	}: CreateProfileRequest): Promise<CreateProfileResponse> {
 		const user = await this.usersRepository.findUniqueById(user_id)
 
@@ -48,22 +47,39 @@ export class CreateProfileUseCase {
 			throw new ResourceNotFoundError()
 		}
 
-		const profileAlreadyExists =
-			await this.profilesRepository.findUniqueByUserId(user_id)
+		const profile = await this.profilesRepository.findUniqueByUserId(user_id)
 
-		if (profileAlreadyExists) {
+		if (profile) {
 			throw new UserAlreadyExistsError()
 		}
 
-		// TODO: send image to cloudinary to get the image url
-		const profile = await this.profilesRepository.create({
+		let newProfile = await this.profilesRepository.create({
 			name,
-			avatar_image_url: avatar,
 			user_id,
+			sleepHours,
 		})
 
+		// TODO: send image to cloudinary to get the image url
+		if (avatar) {
+			const image = await this.fileStorageService.upload({
+				image: avatar,
+				optionalParams: [
+					{ name: 'filename_override', value: 'avatar' },
+					{
+						name: 'folder',
+						value: FILE_STORAGE.USER_FOLDER(newProfile?.publicId || ''),
+					},
+					{ name: 'format', value: 'jpg' },
+				],
+			})
+
+			newProfile = await this.profilesRepository.save(newProfile.id, {
+				avatar_image_url: image.url,
+			})
+		}
+
 		return {
-			profile,
+			profile: newProfile,
 		}
 	}
 }
