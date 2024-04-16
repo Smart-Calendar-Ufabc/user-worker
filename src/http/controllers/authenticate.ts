@@ -17,7 +17,7 @@ export async function authenticate(c: Context) {
 			databaseConnectionString: c.env.DATABASE_URL,
 		})
 
-		const { token } = await authenticateUseCase.execute({
+		const { token, profile } = await authenticateUseCase.execute({
 			email,
 			password,
 		})
@@ -25,6 +25,7 @@ export async function authenticate(c: Context) {
 		return c.json(
 			{
 				token,
+				profile,
 			},
 			200,
 			{

@@ -1,4 +1,4 @@
-import { User } from '@prisma/client/edge'
+import { Profile, User } from '@prisma/client/edge'
 import { UsersRepository } from '../repositories/users-repository'
 import { InvalidCredentialsError } from './errors/InvalidCredentialsError'
 import { compare } from 'bcryptjs'
@@ -12,6 +12,7 @@ interface AuthenticateRequest {
 interface AuthenticateResponse {
 	user: User
 	token: string
+	profile: Profile | null
 }
 
 export class AuthenticateUseCase {
@@ -45,6 +46,7 @@ export class AuthenticateUseCase {
 
 		return {
 			user,
+			profile: user.profile,
 			token,
 		}
 	}
