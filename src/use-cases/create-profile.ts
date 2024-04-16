@@ -54,6 +54,7 @@ export class CreateProfileUseCase {
 		}
 
 		let newProfile = await this.profilesRepository.create({
+			publicId: crypto.randomUUID(),
 			name,
 			user_id,
 			sleepHours,
