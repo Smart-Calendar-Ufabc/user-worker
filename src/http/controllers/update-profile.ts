@@ -29,6 +29,9 @@ export async function updateProfile(c: Context) {
 
 		const updateProfile = makeUpdateProfileUseCase({
 			databaseConnectionString: c.env.DATABASE_URL,
+			cloudinaryApiKey: c.env.CLOUDINARY_API_KEY,
+			cloudinaryCloudName: c.env.CLOUDINARY_CLOUD_NAME,
+			cloundinaryApiSecret: c.env.CLOUDINARY_API_SECRET,
 		})
 
 		const { profile } = await updateProfile.execute({

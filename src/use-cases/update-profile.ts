@@ -1,6 +1,8 @@
 import { Profile } from '@prisma/client/edge'
 import { ProfilesRepository } from '../repositories/profiles-repository'
 import { ResourceNotFoundError } from './errors/ResourceNotFoundError'
+import { FileStorage } from '../services/file-storage/file-storage'
+import { FILE_STORAGE } from '../config'
 
 interface UpdateProfileRequest {
 	id: string
@@ -23,7 +25,10 @@ interface UpdateProfileResponse {
 }
 
 export class UpdateProfileUseCase {
-	constructor(private profilesRepository: ProfilesRepository) {
+	constructor(
+		private profilesRepository: ProfilesRepository,
+		private fileStorageService: FileStorage,
+	) {
 		this.profilesRepository = profilesRepository
 	}
 
@@ -39,17 +44,33 @@ export class UpdateProfileUseCase {
 			throw new ResourceNotFoundError()
 		}
 
-		// TODO: send image to cloudinary to get the image url
-		// TODO: delete old image from cloudinary
-
-		profile.name = name
 		if (avatar) {
-			profile.avatar_image_url = avatar
+			// TODO: delete old image from cloudinary
+			const image = await this.fileStorageService.upload({
+				image: avatar,
+				optionalParams: [
+					{ name: 'filename_override', value: 'avatar' },
+					{
+						name: 'folder',
+						value: FILE_STORAGE.USER_FOLDER(profile?.publicId || ''),
+					},
+					{ name: 'format', value: 'jpg' },
+				],
+			})
+
+			const newProfile = await this.profilesRepository.save(profile.id, {
+				name,
+				avatar_image_url: image.url,
+				sleepHours,
+			})
+
+			return {
+				profile: newProfile,
+			}
 		}
 
 		const newProfile = await this.profilesRepository.save(profile.id, {
-			name: profile.name,
-			avatar_image_url: profile.avatar_image_url,
+			name,
 			sleepHours,
 		})
 
