@@ -58,7 +58,7 @@ export class CreateUserTempUseCase {
 					},
 				],
 				from: {
-					email: 'ease-calendar@gisellehoekveld.me',
+					email: 'no-reply@gisellehoekveld.me',
 					name: 'Ease Calendar',
 				},
 				subject: 'Código de verificação - Cadastro',
