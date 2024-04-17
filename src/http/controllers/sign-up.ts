@@ -15,19 +15,15 @@ export async function singUp(c: Context) {
 
 		const createUserTempUseCase = makeCreateUserTempUseCase({
 			databaseConnectionString: c.env.DATABASE_URL,
+			isLocalhost: c.env?.IS_LOCALHOST,
 		})
 
-		const { code } = await createUserTempUseCase.execute({
+		await createUserTempUseCase.execute({
 			email,
 			password,
 		})
 
-		return c.json(
-			{
-				code,
-			},
-			200,
-		)
+		return c.json({}, 200)
 	} catch (error) {
 		if (error instanceof z.ZodError) {
 			return c.json(

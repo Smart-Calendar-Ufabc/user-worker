@@ -6,6 +6,7 @@ declare global {
 		CLOUDINARY_API_SECRET: string
 		CLOUDINARY_CLOUD_NAME: string
 		DATABASE_URL: string
+		IS_LOCALHOST?: boolean
 		user: User
 		profile: Profile
 	}

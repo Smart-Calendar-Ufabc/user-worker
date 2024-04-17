@@ -15,21 +15,29 @@ export class PrismaSessionsRepository implements SessionsRepository {
 	}
 
 	async findUniqueByToken(token: string) {
-		return this.prisma.session.findUnique({
+		return await this.prisma.session.findUnique({
 			where: {
 				token,
 			},
 		})
 	}
 
+	async findManyByUserId(userId: string) {
+		return await this.prisma.session.findMany({
+			where: {
+				user_id: userId,
+			},
+		})
+	}
+
 	async create(data: Prisma.SessionUncheckedCreateInput) {
-		return this.prisma.session.create({
+		return await this.prisma.session.create({
 			data,
 		})
 	}
 
 	async update(id: string, data: Prisma.SessionUpdateInput) {
-		return this.prisma.session.update({
+		return await this.prisma.session.update({
 			where: {
 				id,
 			},
@@ -38,9 +46,17 @@ export class PrismaSessionsRepository implements SessionsRepository {
 	}
 
 	async delete(id: string) {
-		this.prisma.session.delete({
+		await this.prisma.session.delete({
 			where: {
 				id,
+			},
+		})
+	}
+
+	async deleteByUserId(userId: string) {
+		await this.prisma.session.deleteMany({
+			where: {
+				user_id: userId,
 			},
 		})
 	}

@@ -66,6 +66,7 @@ export class CreateProfileUseCase {
 				image: avatar,
 				optionalParams: [
 					{ name: 'filename_override', value: 'avatar' },
+					{ name: 'use_filename', value: 'true' },
 					{
 						name: 'folder',
 						value: FILE_STORAGE.USER_FOLDER(newProfile?.publicId || ''),

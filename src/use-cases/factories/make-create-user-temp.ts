@@ -4,8 +4,10 @@ import { CreateUserTempUseCase } from '../create-user-temp'
 
 export function makeCreateUserTempUseCase({
 	databaseConnectionString,
+	isLocalhost,
 }: {
 	databaseConnectionString: string
+	isLocalhost?: boolean
 }) {
 	const options = {
 		connectionString: databaseConnectionString,
@@ -16,6 +18,7 @@ export function makeCreateUserTempUseCase({
 	const createUserTempUseCase = new CreateUserTempUseCase(
 		prismaUsersTempRepository,
 		prismaUsersRepository,
+		isLocalhost,
 	)
 
 	return createUserTempUseCase

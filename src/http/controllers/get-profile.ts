@@ -3,11 +3,11 @@ import { makeGetProfileUseCase } from '../../use-cases/factories/make-get-profil
 
 export async function getProfile(c: Context) {
 	try {
-		const createProfileUseCase = makeGetProfileUseCase({
+		const getProfileUseCase = makeGetProfileUseCase({
 			databaseConnectionString: c.env.DATABASE_URL,
 		})
 
-		const { profile } = await createProfileUseCase.execute({
+		const { profile } = await getProfileUseCase.execute({
 			userId: c.env.user.id,
 		})
 

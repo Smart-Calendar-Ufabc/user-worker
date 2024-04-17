@@ -8,6 +8,7 @@ import { createProfile } from './http/controllers/create-profile'
 import { ensureAuthenticate } from './http/middlewares/ensure-authenticate'
 import { updateProfile } from './http/controllers/update-profile'
 import { getProfile } from './http/controllers/get-profile'
+import { deleteSession } from './http/controllers/delete-session'
 
 const app = new Hono<{ Bindings: Bindings }>().basePath('/users')
 
@@ -19,12 +20,13 @@ app.use(
 			'https://ease-calendar-front-end.pages.dev',
 			'http://localhost:3000',
 		],
-		allowMethods: ['POST', 'PUT'],
+		allowMethods: ['POST', 'PUT', 'DELETE', 'GET'],
 		allowHeaders: ['Content-Type', 'Authorization'],
 	}),
 )
 app.use(prettyJSON())
 app.post('/sessions', authenticate)
+app.delete('/sessions', ensureAuthenticate, deleteSession)
 app.post('/sign-up', singUp)
 app.post('/sign-up/code-validate', singUpCodeValidate)
 app.get('/profile', ensureAuthenticate, getProfile)

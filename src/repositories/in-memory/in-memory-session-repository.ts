@@ -15,6 +15,10 @@ export class InMemorySessionsRepository implements SessionsRepository {
 		return session
 	}
 
+	async findManyByUserId(userId: string) {
+		return this.items.filter((item) => item.user_id === userId)
+	}
+
 	async create(data: Prisma.SessionUncheckedCreateInput) {
 		const session: Session = {
 			id: crypto.randomUUID(),
@@ -49,5 +53,9 @@ export class InMemorySessionsRepository implements SessionsRepository {
 		}
 
 		this.items.splice(sessionIndex, 1)
+	}
+
+	async deleteByUserId(userId: string) {
+		this.items = this.items.filter((item) => item.user_id !== userId)
 	}
 }
