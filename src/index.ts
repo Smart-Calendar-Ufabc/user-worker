@@ -9,6 +9,7 @@ import { ensureAuthenticate } from './http/middlewares/ensure-authenticate'
 import { updateProfile } from './http/controllers/update-profile'
 import { getProfile } from './http/controllers/get-profile'
 import { deleteSession } from './http/controllers/delete-session'
+import { updateOnboarding } from './http/controllers/update-onboarding'
 
 const app = new Hono<{ Bindings: Bindings }>().basePath('/users')
 
@@ -20,7 +21,7 @@ app.use(
 			'https://ease-calendar-front-end.pages.dev',
 			'http://localhost:3000',
 		],
-		allowMethods: ['POST', 'PUT', 'DELETE', 'GET'],
+		allowMethods: ['POST', 'PUT', 'DELETE', 'GET', 'PATCH'],
 		allowHeaders: ['Content-Type', 'Authorization'],
 	}),
 )
@@ -32,5 +33,6 @@ app.post('/sign-up/code-validate', singUpCodeValidate)
 app.get('/profile', ensureAuthenticate, getProfile)
 app.post('/profile', ensureAuthenticate, createProfile)
 app.put('/profile', ensureAuthenticate, updateProfile)
+app.patch('/onboarding', ensureAuthenticate, updateOnboarding)
 
 export default app

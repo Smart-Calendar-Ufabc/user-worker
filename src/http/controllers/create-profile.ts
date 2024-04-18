@@ -7,7 +7,7 @@ import { UserAlreadyExistsError } from '../../use-cases/errors/UserAlreadyExists
 
 export async function createProfile(c: Context) {
 	const signUpBodySchema = z.object({
-		name: z.string(),
+		name: z.string().optional(),
 		avatar: z.string().optional(),
 		sleepHours: z.object({
 			start: z.object({

@@ -8,7 +8,7 @@ import { FILE_STORAGE } from '../config'
 
 interface CreateProfileRequest {
 	user_id: string
-	name: string
+	name?: string
 	avatar?: string
 	sleepHours?: {
 		start: {
@@ -58,6 +58,10 @@ export class CreateProfileUseCase {
 			name,
 			user_id,
 			sleepHours,
+		})
+
+		await this.usersRepository.update(user_id, {
+			onboarding_completed: true,
 		})
 
 		// TODO: send image to cloudinary to get the image url

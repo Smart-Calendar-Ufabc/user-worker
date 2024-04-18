@@ -13,6 +13,7 @@ interface AuthenticateResponse {
 	user: User
 	token: string
 	profile: Profile | null
+	onboardingCompleted: boolean
 }
 
 export class AuthenticateUseCase {
@@ -48,6 +49,7 @@ export class AuthenticateUseCase {
 			user,
 			profile: user.profile,
 			token,
+			onboardingCompleted: user.onboarding_completed,
 		}
 	}
 }

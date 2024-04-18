@@ -24,10 +24,11 @@ model UserTemp {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  password_hash String
-  created_at    DateTime @default(now())
+  id                   String   @id @default(uuid())
+  email                String   @unique
+  password_hash        String
+  created_at           DateTime @default(now())
+  onboarding_completed Boolean  @default(false)
 
   sessions          Session[]
   password_recovery PasswordRecovery?
@@ -64,7 +65,7 @@ model PasswordRecovery {
 model Profile {
   id               String   @id @default(uuid())
   publicId         String?  @unique @default(uuid())
-  name             String
+  name             String?
   avatar_image_url String?
   created_at       DateTime @default(now())
   updated_at       DateTime @default(now())

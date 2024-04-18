@@ -17,15 +17,17 @@ export async function authenticate(c: Context) {
 			databaseConnectionString: c.env.DATABASE_URL,
 		})
 
-		const { token, profile } = await authenticateUseCase.execute({
-			email,
-			password,
-		})
+		const { token, profile, onboardingCompleted } =
+			await authenticateUseCase.execute({
+				email,
+				password,
+			})
 
 		return c.json(
 			{
 				token,
 				profile,
+				onboardingCompleted,
 			},
 			200,
 			{

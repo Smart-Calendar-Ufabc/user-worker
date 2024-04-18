@@ -3,10 +3,11 @@ import { ProfilesRepository } from '../repositories/profiles-repository'
 import { ResourceNotFoundError } from './errors/ResourceNotFoundError'
 import { FileStorage } from '../services/file-storage/file-storage'
 import { FILE_STORAGE } from '../config'
+import { UsersRepository } from '../repositories/users-repository'
 
 interface UpdateProfileRequest {
 	id: string
-	name: string
+	name?: string
 	avatar?: string
 	sleepHours?: {
 		start: {
@@ -27,6 +28,7 @@ interface UpdateProfileResponse {
 export class UpdateProfileUseCase {
 	constructor(
 		private profilesRepository: ProfilesRepository,
+		private usersRepository: UsersRepository,
 		private fileStorageService: FileStorage,
 	) {
 		this.profilesRepository = profilesRepository
@@ -64,6 +66,10 @@ export class UpdateProfileUseCase {
 				sleepHours,
 			})
 
+			await this.usersRepository.update(profile.user_id, {
+				onboarding_completed: true,
+			})
+
 			return {
 				profile: newProfile,
 			}
@@ -72,6 +78,10 @@ export class UpdateProfileUseCase {
 		const newProfile = await this.profilesRepository.save(profile.id, {
 			name,
 			sleepHours,
+		})
+
+		await this.usersRepository.update(profile.user_id, {
+			onboarding_completed: true,
 		})
 
 		return {

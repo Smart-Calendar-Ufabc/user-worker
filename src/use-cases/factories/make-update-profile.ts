@@ -1,4 +1,5 @@
 import { PrismaProfilesRepository } from '../../repositories/prisma/prisma-profiles-repository'
+import { PrismaUsersRepository } from '../../repositories/prisma/prisma-users-repository'
 import { CloudinaryFileStorage } from '../../services/file-storage/cloudinary/cloudinary-file-storage'
 import { UpdateProfileUseCase } from '../update-profile'
 
@@ -18,6 +19,7 @@ export function makeUpdateProfileUseCase({
 	}
 
 	const prismaProfileRepository = new PrismaProfilesRepository(options)
+	const prismaUsersRepository = new PrismaUsersRepository(options)
 	const cloudinaryFileStorage = new CloudinaryFileStorage(
 		cloudinaryApiKey,
 		cloundinaryApiSecret,
@@ -26,6 +28,7 @@ export function makeUpdateProfileUseCase({
 
 	const createUserTempUseCase = new UpdateProfileUseCase(
 		prismaProfileRepository,
+		prismaUsersRepository,
 		cloudinaryFileStorage,
 	)
 
