@@ -19,6 +19,9 @@ export class PrismaUsersRepository implements UsersRepository {
 			where: {
 				id,
 			},
+			include: {
+				profile: true,
+			},
 		})
 
 		return user

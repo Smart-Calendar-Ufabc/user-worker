@@ -7,10 +7,9 @@ export async function deleteSession(c: Context) {
 			databaseConnectionString: c.env.DATABASE_URL,
 		})
 
-		console.log('c.env.user.id', c.env.user.id)
-
 		await deleteSessionUseCase.execute({
 			userId: c.env.user.id,
+			token: c.env.token,
 		})
 
 		return c.json(null, 200)

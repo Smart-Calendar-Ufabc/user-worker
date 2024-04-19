@@ -1,3 +1,4 @@
+import { genSalt, hash } from 'bcryptjs'
 import { PasswordRecoveryRepository } from '../repositories/password-recovery-repository'
 import { UsersRepository } from '../repositories/users-repository'
 import { PasswordDoesNotMatchError } from './errors/PasswordDoesNotMatchError'
@@ -31,8 +32,12 @@ export class PasswordRecoveryUpdatePasswordUseCase {
 			throw new PasswordDoesNotMatchError()
 		}
 
+		const salt = await genSalt(10)
+
 		await this.userRepository.update(passwordRecovery.user_id, {
-			password_hash: newPassword,
+			password_hash: await hash(newPassword, salt),
 		})
+
+		await this.passwordRecoveryRepository.delete(passwordRecovery.id)
 	}
 }

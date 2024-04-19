@@ -55,7 +55,9 @@ export class InMemorySessionsRepository implements SessionsRepository {
 		this.items.splice(sessionIndex, 1)
 	}
 
-	async deleteByUserId(userId: string) {
-		this.items = this.items.filter((item) => item.user_id !== userId)
+	async deleteByUserIdAndToken(userId: string, token: string) {
+		this.items = this.items.filter(
+			(item) => item.user_id !== userId && item.token !== token,
+		)
 	}
 }

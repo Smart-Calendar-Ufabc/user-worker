@@ -1,7 +1,9 @@
 import { Prisma, Profile, User } from '@prisma/client/edge'
 
 export interface UsersRepository {
-	findUniqueById(id: string): Promise<User | null>
+	findUniqueById(
+		id: string,
+	): Promise<(User & { profile: Profile | null }) | null>
 	findUniqueByEmail(
 		email: string,
 	): Promise<(User & { profile: Profile | null }) | null>

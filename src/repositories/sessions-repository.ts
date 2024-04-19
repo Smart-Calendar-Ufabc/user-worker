@@ -6,5 +6,5 @@ export interface SessionsRepository {
 	create(data: Prisma.SessionUncheckedCreateInput): Promise<Session>
 	update(id: string, data: Prisma.SessionUpdateInput): Promise<Session>
 	delete(id: string): Promise<void>
-	deleteByUserId(userId: string): Promise<void>
+	deleteByUserIdAndToken(userId: string, token: string): Promise<void>
 }

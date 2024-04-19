@@ -29,16 +29,25 @@ export class InMemoryProfilesRepository implements ProfilesRepository {
 		name,
 		user_id,
 		avatar_image_url,
-		blockedTime_id,
 	}: Prisma.ProfileUncheckedCreateInput) {
 		const profile: Profile = {
 			id: crypto.randomUUID(),
+			publicId: crypto.randomUUID(),
 			created_at: new Date(),
 			updated_at: new Date(),
-			name,
+			name: name || null,
 			user_id,
 			avatar_image_url: avatar_image_url || null,
-			blockedTime_id: blockedTime_id || null,
+			sleepHours: {
+				start: {
+					hour: 22,
+					minutes: 0,
+				},
+				end: {
+					hour: 8,
+					minutes: 0,
+				},
+			},
 		}
 
 		this.items.push(profile)

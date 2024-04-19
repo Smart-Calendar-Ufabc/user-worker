@@ -53,10 +53,11 @@ export class PrismaSessionsRepository implements SessionsRepository {
 		})
 	}
 
-	async deleteByUserId(userId: string) {
+	async deleteByUserIdAndToken(userId: string, token: string) {
 		await this.prisma.session.deleteMany({
 			where: {
 				user_id: userId,
+				token,
 			},
 		})
 	}
