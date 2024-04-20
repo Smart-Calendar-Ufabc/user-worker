@@ -25,7 +25,12 @@ app.use(
 			'http://localhost:3000',
 		],
 		allowMethods: ['POST', 'PUT', 'DELETE', 'GET', 'PATCH'],
-		allowHeaders: ['Content-Type', 'Authorization'],
+		allowHeaders: [
+			'Content-Type',
+			'Authorization',
+			'Access-Control-Allow-Credentials',
+		],
+		credentials: true,
 	}),
 )
 app.use(prettyJSON())

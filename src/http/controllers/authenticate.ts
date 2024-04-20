@@ -1,4 +1,5 @@
 import { Context } from 'hono'
+import { setCookie } from 'hono/cookie'
 import { z } from 'zod'
 import { makeAuthenticateUseCase } from '../../use-cases/factories/make-authenticate'
 import { InvalidCredentialsError } from '../../use-cases/errors/InvalidCredentialsError'
@@ -17,11 +18,23 @@ export async function authenticate(c: Context) {
 			databaseConnectionString: c.env.DATABASE_URL,
 		})
 
+		const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+
 		const { token, profile, onboardingCompleted } =
 			await authenticateUseCase.execute({
 				email,
 				password,
 			})
+
+		const isLocal = Boolean(c.env?.IS_LOCALHOST)
+
+		setCookie(c, 'session', token, {
+			path: '/',
+			secure: !isLocal,
+			httpOnly: true,
+			expires: expiresAt,
+			sameSite: isLocal ? 'Lax' : 'None',
+		})
 
 		return c.json(
 			{
@@ -30,9 +43,6 @@ export async function authenticate(c: Context) {
 				onboardingCompleted,
 			},
 			200,
-			{
-				'Set-Cookie': `authToken=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=3600; Secure`,
-			},
 		)
 	} catch (error) {
 		if (error instanceof z.ZodError) {
